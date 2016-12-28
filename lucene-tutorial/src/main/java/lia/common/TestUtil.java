@@ -25,7 +25,10 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.Directory;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.io.File;
+import java.io.FileInputStream;
 
 public class TestUtil {
   public static boolean hitsIncludeTitle(IndexSearcher searcher, TopDocs hits, String title)
@@ -62,7 +65,14 @@ public class TestUtil {
   
   public static Directory getBookIndexDirectory() throws IOException {
     // The build.xml ant script sets this property for us:
-    return FSDirectory.open(new File(System.getProperty("index.dir")));
+	Properties prop = new Properties();
+	InputStream input = new FileInputStream("config.properties");
+	prop.load(input);
+	String indexDir = prop.getProperty("index.dir");
+	System.out.println("index.dir: " + indexDir);
+
+    return FSDirectory.open(new File(indexDir));
+    //return FSDirectory.open(new File(System.getProperty("index.dir")));
   }
 
   public static void rmDir(File dir) throws IOException {
